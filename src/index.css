@@ -11,3 +11,27 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.row {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.square {
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.crossed {
+    background-color: blue;
+}
+
+.uncrossed {
+    background-color: red;
+}

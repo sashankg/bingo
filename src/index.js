@@ -18,11 +18,6 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-firebase.database().ref('test').set({
-    valueA: "hello", 
-    valueB: "world",
-})
-
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
