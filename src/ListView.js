@@ -1,6 +1,5 @@
 import React from 'react';
 import Firebase from 'firebase';
-import Popup from 'react-popup';
 
 export default class ListView extends React.Component {
 
