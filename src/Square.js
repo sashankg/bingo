@@ -1,6 +1,6 @@
 import React from 'react';
-import firebase from 'firebase';
-
+import Modal from 'react-modal';
+import ListView from './ListView';
 export default class Square extends React.Component {
 
     constructor(props) {
@@ -8,6 +8,7 @@ export default class Square extends React.Component {
         this.state = {
             text: "",
             isCrossed: false,
+            modalOpen: false,
         }
     }
 
@@ -27,9 +28,15 @@ export default class Square extends React.Component {
     }
 
     onClick() {
-        if (this.props.squareRef) {
-            this.props.squareRef.child('isCrossed').set(!this.state.isCrossed);
-        } 
+        if (this.props.ready) {
+            if (this.props.squareRef) {
+                this.props.squareRef.child('isCrossed').set(!this.state.isCrossed);
+            }
+        }
+        else {
+            this.setState({ modalOpen: true })
+        }
+
     }
 
     render() {
@@ -44,6 +51,12 @@ export default class Square extends React.Component {
                 onClick={ this.onClick.bind(this) }
             >
                 {this.state.text}
+                <Modal
+                    isOpen={this.state.modalOpen}
+                    onRequestClose={() => this.setState({ modalOpen: false }) }
+                >
+                    <ListView />
+                </Modal>
             </div>
         }
 
