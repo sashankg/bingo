@@ -21,6 +21,15 @@ export default class Board extends React.Component {
         });
     }
 
+    setSquare(square)
+    {
+        return function (ref)
+        {
+            this.state.board[square] = ref
+            this.setState({board:this.state.board})
+        }
+    }
+
     render() {
         console.log(this.state.board)
         return <div className="board">
