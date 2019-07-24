@@ -1,6 +1,5 @@
 import React from 'react';
-import Modal from 'react-modal';
-import ListView from './ListView';
+
 export default class Square extends React.Component {
 
     constructor(props) {
@@ -8,18 +7,34 @@ export default class Square extends React.Component {
         this.state = {
             text: "",
             isCrossed: false,
-            modalOpen: false,
         }
     }
 
     componentWillMount() {
-        if (this.props.squareRef != null) {
-            this.props.squareRef.child('text').once('value', (snapshot) => {
+        if (this.props.squareKey !== null) {
+            const squareRef = this.props.gameRef.child('squares').child(this.props.squareKey);
+            squareRef.child('text').once('value', (snapshot) => {
                 this.setState({
                     text: snapshot.val()
                 });
             })
-            this.props.squareRef.child('isCrossed').on('value', (snapshot) => {
+            squareRef.child('isCrossed').on('value', (snapshot) => {
+                this.setState({
+                    isCrossed: snapshot.val()
+                });
+            })
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.squareKey !== this.props.squareKey) {
+            const squareRef = this.props.gameRef.child('squares').child(this.props.squareKey);
+            squareRef.child('text').once('value', (snapshot) => {
+                this.setState({
+                    text: snapshot.val()
+                });
+            })
+            squareRef.child('isCrossed').on('value', (snapshot) => {
                 this.setState({
                     isCrossed: snapshot.val()
                 });
@@ -29,17 +44,19 @@ export default class Square extends React.Component {
 
     onClick() {
         if (this.props.ready) {
-            if (this.props.squareRef) {
-                this.props.squareRef.child('isCrossed').set(!this.state.isCrossed);
+            if (this.props.squareKey) {
+                const squareRef = this.props.gameRef.child('squares').child(this.props.squareKey);
+                squareRef.child('isCrossed').set(!this.state.isCrossed);
             }
         }
         else {
-            this.setState({ modalOpen: true })
+            this.props.openModal();
         }
 
     }
 
     render() {
+        console.log(this.state)
         if (this.props.isBingo) {
             return <div className="square crossed">
                 BINGO
@@ -51,12 +68,6 @@ export default class Square extends React.Component {
                 onClick={ this.onClick.bind(this) }
             >
                 {this.state.text}
-                <Modal
-                    isOpen={this.state.modalOpen}
-                    onRequestClose={() => this.setState({ modalOpen: false }) }
-                >
-                    <ListView />
-                </Modal>
             </div>
         }
 

@@ -11,36 +11,40 @@ export default class ListView extends React.Component {
 
     componentWillMount()
     {
-        let wordRef = Firebase.database().ref('games/test_game/squares');
-        wordRef.on('child_added', snapshot => {
+        console.log('')
+        this.wordRef = Firebase.database().ref('games/test_game/squares');
+        this.wordRef.on('child_added', snapshot => {
             let word = {
                 "text" : snapshot.val().text,
-                 "isCrossed" : snapshot.val().isCrossed};
+                "isCrossed": snapshot.val().isCrossed,
+                key: snapshot.key,
+            };
             this.setState({words : [word].concat(this.state.words)})
         })
     }
 
-    addMessage(e)
+    addSquare(e)
     {
-
         e.preventDefault();
         var wordObject = {"text" : this.inputEl.value, "isCrossed" : false}
-        Firebase.database().ref('games/test_game/squares').push(wordObject);
-        this.inputEl.value = {};
+        const key = Firebase.database().ref('games/test_game/squares').push(wordObject);
+        this.onSelect(key);
+        this.inputEl.value = "";
     }
 
-    onMessageClick()
-    {
-        console.log("I clicked")
+    onSelect(key) {
+        this.props.onSelect(key);
+        this.props.close();
+        this.wordRef.off();
     }
-    
+
     render() {
         return (
             <div>
                 <ul>
-                    { this.state.words.map( d => <li key = {d.text} onClick= {this.onMessageClick}> {d.text}  </li> ) }
+                    { this.state.words.map(d => <li key = {d.key} onClick={() => this.onSelect(d.key)}> {d.text} </li>) }
                 </ul>
-                <form onSubmit={this.addMessage.bind(this)}>
+                <form onSubmit={this.addSquare.bind(this)}>
                     <input type = "text"  value = "Add new" ref = 
                         { el => this.inputEl = el} />
                     <input type = "submit" value = "Submit"/>
