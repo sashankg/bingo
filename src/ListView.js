@@ -27,8 +27,8 @@ export default class ListView extends React.Component {
     {
         e.preventDefault();
         var wordObject = {"text" : this.inputEl.value, "isCrossed" : false}
-        const key = Firebase.database().ref('games/test_game/squares').push(wordObject);
-        this.onSelect(key);
+        const ref = Firebase.database().ref('games/test_game/squares').push(wordObject);
+        this.onSelect(ref.key);
         this.inputEl.value = "";
     }
 
